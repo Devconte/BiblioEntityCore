@@ -8,9 +8,12 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Constants.ConnectionPassword = args[1];
+        using (AppDbContext context = new AppDbContext())
+        {
+        
+            Console.WriteLine("Hello World!");
+            
+        }
 
-
-        Console.WriteLine("Hello World!");
     }
 }
