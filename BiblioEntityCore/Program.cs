@@ -42,6 +42,9 @@ public class Program
                     case "4":
                         FindAuthor(context);
                         break;
+                    case "7":
+                        DeleteAuthor(context);
+                        break;
                     case "10":
                         return;
                     default:
@@ -98,6 +101,20 @@ public class Program
         Console.WriteLine($"Author'{name}' found");
     }
 
+    private static void DeleteAuthor(AppDbContext context)
+    {
+        Console.WriteLine("Enter Author Name to delete: ");
+        string? name = Console.ReadLine();
+        var author = context.Authors.FirstOrDefault(a => a.Name == name);
+        if (author == null)
+        {
+            Console.WriteLine("Author not found");
+            return;
+        }
+        context.Authors.Remove(author);
+        context.SaveChanges();
+    }
+
     private static void AddBook(AppDbContext context)
     {
         Console.WriteLine("Enter Book Title: ");
@@ -117,4 +134,5 @@ public class Program
        
     }
    
+    
 }
