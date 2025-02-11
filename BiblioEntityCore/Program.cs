@@ -45,6 +45,9 @@ public class Program
                     case "5":
                         ListBooks(context);
                         break;
+                    case "6":
+                        FindBook(context);
+                        break;
                     case "7":
                         DeleteAuthor(context);
                         break;
@@ -153,5 +156,20 @@ public class Program
         }
         
     }
+
+    private static void FindBook(AppDbContext context)
+    {
+        Console.WriteLine("Enter Book Title you are looking for: ");
+        string? title = Console.ReadLine();
+        var book = context.Books.FirstOrDefault(b => b.Title.ToLower() == title.ToLower());
+        if (book == null)
+        {
+            Console.WriteLine("Book not found");
+            return;
+        }
+
+        Console.WriteLine($"Book '{title}' was found");
+    }
+    
     
 }
