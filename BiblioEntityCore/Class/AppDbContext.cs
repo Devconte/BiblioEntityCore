@@ -11,4 +11,14 @@ public class AppDbContext : DbContext
     {
         optionsBuilder.UseSqlServer(Constants.ConnectionString);
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // ajout d'une relation one to many.
+        modelBuilder.Entity<Book>()
+            .HasOne(a => a.Author)
+            .WithMany(b => b.Books)
+            .HasForeignKey(a => a.AuthorId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }
