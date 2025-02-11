@@ -42,6 +42,9 @@ public class Program
                     case "4":
                         FindAuthor(context);
                         break;
+                    case "5":
+                        ListBooks(context);
+                        break;
                     case "7":
                         DeleteAuthor(context);
                         break;
@@ -115,6 +118,7 @@ public class Program
         context.SaveChanges();
     }
 
+    
     private static void AddBook(AppDbContext context)
     {
         Console.WriteLine("Enter Book Title: ");
@@ -122,7 +126,7 @@ public class Program
         Console.WriteLine("Enter Book Author: ");
         string? author = Console.ReadLine();
 
-        var existingAuthor = context.Authors.FirstOrDefault(a => a.Name.ToLower() == author.ToLower());
+        var existingAuthor = context.Authors.FirstOrDefault(a => author != null && a.Name.ToLower() == author.ToLower());
         if (existingAuthor == null)
         {
             Console.WriteLine("Author not found");
@@ -133,6 +137,21 @@ public class Program
         context.SaveChanges();
        
     }
-   
+
+    private static void ListBooks(AppDbContext context)
+    {
+        var books = context.Books.ToList();
+        if (books.Count == 0)
+        {
+            Console.WriteLine("There are no books");
+            return;
+        }
+
+        foreach (var book in books )
+        {
+            Console.WriteLine($"{book.Title}");
+        }
+        
+    }
     
 }
