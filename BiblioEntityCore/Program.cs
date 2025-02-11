@@ -2,6 +2,7 @@
 
 using BiblioEntityCore.Class;
 using BiblioEntityCore.Migrations;
+using Microsoft.EntityFrameworkCore;
 
 namespace BiblioEntityCore;
 
@@ -32,6 +33,9 @@ public class Program
                     case "1":
                         AddAuthor(context);
                         break;
+                    case "2":
+                        AddBook(context);
+                        break;
                     case "3":
                         ListAuthors(context);
                         break;
@@ -52,7 +56,7 @@ public class Program
     private static void AddAuthor(AppDbContext context)
     {
         Console.WriteLine("Enter Author Name: ");
-        string name = Console.ReadLine();
+        string? name = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(name))
         {
             Console.WriteLine("Name cannot be empty");
@@ -92,5 +96,25 @@ public class Program
             return;
         }
         Console.WriteLine($"Author'{name}' found");
-    } 
+    }
+
+    private static void AddBook(AppDbContext context)
+    {
+        Console.WriteLine("Enter Book Title: ");
+        string title = Console.ReadLine()??"invalid";
+        Console.WriteLine("Enter Book Author: ");
+        string? author = Console.ReadLine();
+
+        var existingAuthor = context.Authors.FirstOrDefault(a => a.Name.ToLower() == author.ToLower());
+        if (existingAuthor == null)
+        {
+            Console.WriteLine("Author not found");
+            return;
+        }
+        var book = new Book { Title = title, Author = existingAuthor };
+        context.Books.Add(book);
+        context.SaveChanges();
+       
+    }
+   
 }
