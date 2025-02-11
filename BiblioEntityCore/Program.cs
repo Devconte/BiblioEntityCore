@@ -21,11 +21,12 @@ public class Program
                 Console.WriteLine("3. List Authors");
                 Console.WriteLine("4. Find an Author by Name");
                 Console.WriteLine("5. List Books");
-                Console.WriteLine("6. Find a Book by Title");
-                Console.WriteLine("7. Delete Author");
-                Console.WriteLine("8. Delete Book");
-                Console.WriteLine("9. Statistics");
-                Console.WriteLine("10. Exit");
+                Console.WriteLine("6. Find books for a specific Author");
+                Console.WriteLine("7. Find a Book by Title");
+                Console.WriteLine("8. Delete Author");
+                Console.WriteLine("9. Delete Book");
+                Console.WriteLine("10. Statistics");
+                Console.WriteLine("11. Exit");
                 var choice = Console.ReadLine();
 
                 switch (choice)
@@ -46,12 +47,15 @@ public class Program
                         ListBooks(context);
                         break;
                     case "6":
-                        FindBook(context);
+                        ListAllBooksByAuthor(context);
                         break;
                     case "7":
+                        FindBook(context);
+                        break;
+                    case "8":
                         DeleteAuthor(context);
                         break;
-                    case "10":
+                    case "11":
                         return;
                     default:
                         Console.WriteLine("Choix invalide !");
@@ -170,6 +174,32 @@ public class Program
 
         Console.WriteLine($"Book '{title}' was found");
     }
-    
-    
+
+    private static void ListAllBooksByAuthor(AppDbContext context)
+    {
+        Console.Write("Enter Author Name: ");
+        string? name = Console.ReadLine();
+
+        var author = context.Authors.FirstOrDefault(a => a.Name == name);
+
+        if (author == null)
+        {
+            Console.WriteLine("Author not found.");
+            return;
+        }
+
+        var books = context.Books.Where(b => b.AuthorId == author.Id).ToList();
+
+        if (books.Count == 0)
+        {
+            Console.WriteLine($"No books found for {name}.");
+            return;
+        }
+        Console.WriteLine($"Books by {name}:");
+        foreach (var book in books)
+        {
+            Console.WriteLine($"- {book.Title}");
+        }
+    }
+
 }
