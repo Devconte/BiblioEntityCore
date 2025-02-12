@@ -1,6 +1,8 @@
+using BiblioEntityCore.Models;
+using BiblioEntityCore.Utils;
 using Microsoft.EntityFrameworkCore;
 
-namespace BiblioEntityCore.Class;
+namespace BiblioEntityCore.Data;
 
 public class AppDbContext : DbContext
 {

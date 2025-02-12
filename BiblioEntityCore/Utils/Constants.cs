@@ -1,4 +1,4 @@
-namespace BiblioEntityCore.Class;
+namespace BiblioEntityCore.Utils;
 
 public class Constants
 {
