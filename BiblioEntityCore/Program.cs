@@ -1,19 +1,13 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using BiblioEntityCore.Class;
+﻿using BiblioEntityCore.Class;
 using BiblioEntityCore.Migrations;
 using Microsoft.EntityFrameworkCore;
-
 namespace BiblioEntityCore;
-
 public class Program
 {
     public static void Main(string[] args)
     {
         using (AppDbContext context = new AppDbContext())
         {
-
-
             while (true)
             {
                 Console.WriteLine("1. Add Author");
@@ -25,8 +19,11 @@ public class Program
                 Console.WriteLine("7. Find a Book by Title");
                 Console.WriteLine("8. Delete Author");
                 Console.WriteLine("9. Delete Book");
-                Console.WriteLine("10. Statistics");
-                Console.WriteLine("11. Exit");
+                Console.WriteLine("10. Count books");
+                Console.WriteLine("11. Count books for a specific Author");
+                Console.WriteLine("12. List authors with more than one book");
+                Console.WriteLine("13. Verify if an author exists");
+                Console.WriteLine("14. Exit");
                 var choice = Console.ReadLine();
 
                 switch (choice)
@@ -55,8 +52,23 @@ public class Program
                     case "8":
                         DeleteAuthor(context);
                         break;
+                    case "9":
+                        DeleteBook(context);;
+                        break;
+                    case "10":
+                        CountBooks(context);
+                        break;
                     case "11":
+                        CountBooksByAuthor(context);
                         return;
+                    case "12":
+                        ListAuthorsWithMoreThanOneBooks(context);
+                        return;
+                    case "13":
+                        VerifyIfAuthorExists(context);
+                        return;
+                    case "14":
+                        break;
                     default:
                         Console.WriteLine("Choix invalide !");
                         break;
@@ -75,7 +87,6 @@ public class Program
             Console.WriteLine("Name cannot be empty");
             return;
         }
-
         var author = new Author { Name = name };
         context.Authors.Add(author);
         context.SaveChanges();
@@ -123,6 +134,7 @@ public class Program
         }
         context.Authors.Remove(author);
         context.SaveChanges();
+        Console.WriteLine($"Author '{name}' deleted");
     }
 
     
@@ -158,7 +170,6 @@ public class Program
         {
             Console.WriteLine($"{book.Title}");
         }
-        
     }
 
     private static void FindBook(AppDbContext context)
@@ -171,7 +182,6 @@ public class Program
             Console.WriteLine("Book not found");
             return;
         }
-
         Console.WriteLine($"Book '{title}' was found");
     }
 
@@ -180,7 +190,7 @@ public class Program
         Console.Write("Enter Author Name: ");
         string? name = Console.ReadLine();
 
-        var author = context.Authors.FirstOrDefault(a => a.Name == name);
+        var author = context.Authors.FirstOrDefault(a => a.Name.ToLower() == name.ToLower());
 
         if (author == null)
         {
@@ -201,5 +211,60 @@ public class Program
             Console.WriteLine($"- {book.Title}");
         }
     }
+    private static void DeleteBook(AppDbContext context)
+    {
+        Console.WriteLine("Enter Book name to delete: ");
+        string? name = Console.ReadLine();
+            
+        var findBookToDelete = context.Books.FirstOrDefault(b => b.Title.ToLower() == name.ToLower());
+
+        if (findBookToDelete != null) context.Books.Remove(findBookToDelete);
+        context.SaveChanges();
+        Console.WriteLine($"Book '{name}' deleted");
+    }
+
+    private static void CountBooks(AppDbContext context)
+    {
+        var booksCount = context.Books.Count();
+        Console.WriteLine($"There are {booksCount} books in the library");
+    }
+
+    private static void CountBooksByAuthor(AppDbContext context)
+    {
+        Console.WriteLine("Enter author's name to count their books:");
+        string? name = Console.ReadLine();
+        var author = context.Authors.FirstOrDefault(a => a.Name.ToLower() == name.ToLower());
+        var books = context.Books.Where(b => b.AuthorId == author.Id);
+        var count = books.Count();
+        Console.WriteLine($"There are {count} books written by {name} in our library");
+    }
+
+    private static void ListAuthorsWithMoreThanOneBooks(AppDbContext context)
+    {
+        var authors = context.Books
+            .GroupBy(b => b.Author)
+            .Where(c => c.Count() > 1)
+            .Select(c => new { Author = c.Key, Count = c.Count() })
+            .ToList();
+
+        if (authors.Any())
+        {
+            Console.WriteLine("Authors with more than one book written:");
+            foreach (var author in authors)
+            {
+                Console.WriteLine($"- {author.Author.Name} ({author.Count} books)");
+            }
+        }
+    }
+
+    private static void VerifyIfAuthorExists(AppDbContext context)
+    {
+        Console.WriteLine("Enter Author Name to verify: ");
+        string? name = Console.ReadLine();
+        bool authorExists = context.Authors.Any(a => a.Name.ToLower() == name.ToLower());
+        Console.WriteLine(authorExists ? $"Author '{name}' found" : $"Author '{name}' does not exist");
+    }
+
+  
 
 }
