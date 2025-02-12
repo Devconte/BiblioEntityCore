@@ -1,2 +1,44 @@
 /BiblioEntityCore.sln.DotSettings.user
 /.idea/
+# Fichiers et dossiers générés automatiquement par .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.csproj.user
+*.vs/
+
+# Fichiers spécifiques à Entity Framework Core
+Migrations/
+
+# Fichiers de logs et de debug
+*.log
+*.tlog
+*.vsp
+*.pdb
+
+# Fichiers de configuration sensibles
+appsettings.json
+appsettings.Development.json
+secrets.json
+
+# Base de données locale
+*.mdf
+*.ldf
+*.db
+
+# Fichiers de l'IDE (Visual Studio, Rider, etc.)
+.vscode/
+.idea/
+*.sln.cache
+
+# Packages NuGet
+packages/
+*.nupkg
+project.lock.json
+
+# Résidus de compilation et déploiement
+dist/
+publish/
+out/
